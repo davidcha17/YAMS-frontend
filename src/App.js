@@ -1,11 +1,17 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
-// import Mapbox from ''
-import ReactMapGL, {Marker, Popup} from "react-map-gl"
+import Home from './mapboxWithReact/home.js'
+import {Switch, Route} from 'react-router-dom'
+import Form from './Components/Form.js'
+import NavBar from './Components/NavBar.js'
+import ProfileContainer from './ProfileComponents/profileContainer.js'
+
+import {withRouter} from 'react-router-dom'
 
 class App extends React.Component{
   
+  // I need to combine the routing and mapbox, the home will be the mapbox component
+
   state = {
     viewport: {
       latitude: 40.7009,
@@ -13,35 +19,110 @@ class App extends React.Component{
       zoom: 13,
       width:'100vw',
       height: "100vh"
-    }
+    },
+    user: {
+      lists: [],
+      username: "",
+      id: 0
+    },
+    token: ""
   }
   
 
-  onViewportChange = viewport => {
-    // console.log(viewport)
-    this.setState({viewport});
-    
-  };
+  onViewportChanged = (point) => {
+    this.setState({
+      viewport: point
+    })
+  }
+
+  componentDidMount() {
+    if (localStorage.getItem("token")) {
+
+      fetch("http://localhost:4000/persist", {
+        headers: {
+          "Authorization": `Bearer ${localStorage.token}`
+        }
+      })
+      .then(r => r.json())
+      .then(this.handleResp)
+    }
+  }
+
+
+  handleResp = (resp) => {
+    if (resp.user) {
+      localStorage.token = resp.token
+      this.setState(resp, () => {
+        this.props.history.push("/profile")
+      })
+    }
+    else {
+      alert(resp.error)
+    }
+  }
+
+  handleLoginSubmit = (userInfo) => {
+    // debugger
+    return fetch(`http://localhost:4000/login`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json"
+      },
+      body: JSON.stringify(userInfo)
+    })
+      .then(res => res.json())
+      .then(this.handleResp)
+  }
+
+  handleRegisterSubmit = (userInfo) => {
+    return fetch(`http://localhost:4000/users`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json"
+      },
+      body: JSON.stringify(userInfo)
+    })
+      .then(res => res.json())
+      .then(this.handleResp)
+  }
+
+  renderForm = (routerProps) => {
+    if(routerProps.location.pathname === "/login"){
+      return <Form formName="Login Form" handleSubmit={this.handleLoginSubmit}/>
+    } else if (routerProps.location.pathname === "/register") {
+      return <Form formName="Register Form" handleSubmit={this.handleRegisterSubmit}/>
+    }
+  }
+
+  renderProfile = (routerProps) => {
+    return <ProfileContainer user={this.state.user} token={this.state.token} />
+  }
+
+  handleLogout = (e) => {
+    localStorage.clear()
+    return <Route path="/" exact render={() => <Home viewport={this.state.viewport} onViewportChanged={this.onViewportChanged} /> } />
+    // token is clearing but we need to render it to the home page after user logs out
+  }
+
+
+
   
   render() {
+    // console.log(this.state)
     return (
       <div className="App">
-      <div style={{position:"fixed", top: "0", left:"0", width:"100%", zIndex:"100", background:"rgba(255, 255, 255, 0.6)"}}>
-        {/* <CategorySelector handleRadio={this.handleRadio} filterTerm={this.state.filterTerm}/> */}
+        <NavBar token={this.state.token} handleLogout={this.handleLogout} />
+        <Switch>
+          <Route path="/login" render={ this.renderForm } />
+          <Route path="/register" render={ this.renderForm } />
+          <Route path="/profile" render={ this.renderProfile } />
+          <Route path="/" exact render={() => <Home viewport={this.state.viewport} onViewportChanged={this.onViewportChanged} /> } />
+          <Route render={ () => <p>Page not Found</p> } />
+        </Switch>
       </div>
-      <ReactMapGL 
-        {...this.state.viewport} 
-        mapboxApiAccessToken= "pk.eyJ1IjoiZGF2aWRjaGExNzciLCJhIjoiY2s4b2xoaW5wMWFoMTNncXMzeGp0amExNiJ9.Jqrd_Ga110ET4Dv3aAcKuw"
-        mapStyle="mapbox://styles/dwang0816/ck1k0qvij2rrl1cobig03w3rf"
-        onViewportChange={this.onViewportChange}
-      >
-      </ReactMapGL>
-      <div style={{position:"fixed", bottom: "0", left:"0", width:"100%", height: "30px", zIndex:"100", background:"rgba(255, 255, 255, 0.6)"}}>
-      </div>
-    </div>
   );
 }
 }
 
 
-export default App;
+export default withRouter(App);
