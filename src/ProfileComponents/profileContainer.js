@@ -13,6 +13,14 @@ class ProfileContainer extends Component {
     }
   }
 
+
+  handleClick = () => {
+    console.log("you are now logging out");
+    let key = this.props.token
+    this.props.handleLogout()
+    // the token has been cleared out but the profileContainer still has instance data about the logged out user
+}
+
   render() {
     let {user:{list, username}} = this.props
 
@@ -25,7 +33,7 @@ class ProfileContainer extends Component {
           {list.map(restaurantObj => <List key={restaurantObj.id} s={snackObj} />)}
         </ol>
         <NewSnackForm token={this.props.token} addOneSnack={this.props.addOneSnack}/> */}
-
+        <button onClick={this.handleClick}>Log out</button>
       </div>
     );
   }

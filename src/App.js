@@ -16,7 +16,7 @@ class App extends React.Component{
     viewport: {
       latitude: 40.7009,
       longitude: -73.9975,
-      zoom: 13,
+      zoom: 15,
       width:'100vw',
       height: "100vh"
     },
@@ -25,16 +25,35 @@ class App extends React.Component{
       username: "",
       id: 0
     },
-    token: ""
+    token: "",
+    restaurantCollections: {
+      array: []
+    },
+    selectedRestaurant: null
   }
-  
+
+  // see how we can transfer the props into the home component and utilize mapbox keywords in order to show the props
+
+  setSelectedRestaurant = (obj) => {
+    // console.log("Click on the controlled")
+    this.setState({
+      selectedRestaurant: obj
+    })
+    // console.log(!this.state.restaurantCollections.selectedRestaurant)
+  }
+
+  deselectRestaurant = (obj) => {
+    this.setState({
+      selectedRestaurant: !obj
+    })
+  }
 
   onViewportChanged = (point) => {
     this.setState({
       viewport: point
     })
   }
-
+  
   componentDidMount() {
     if (localStorage.getItem("token")) {
 
@@ -46,20 +65,23 @@ class App extends React.Component{
       .then(r => r.json())
       .then(this.handleResp)
     }
-  }
 
-
-  handleResp = (resp) => {
-    if (resp.user) {
-      localStorage.token = resp.token
-      this.setState(resp, () => {
-        this.props.history.push("/profile")
+    fetch("http://localhost:4000/restaurants", {
+      headers: {
+        "Authorization": `Bearer ${localStorage.token}`
+      }
+    })
+    .then( res => res.json())
+    .then( restaurantData => {
+      this.setState({
+        restaurantCollections: {
+          array: restaurantData,
+          selectedRestaurant: false
+        }
       })
-    }
-    else {
-      alert(resp.error)
-    }
+    })
   }
+
 
   handleLoginSubmit = (userInfo) => {
     // debugger
@@ -70,7 +92,7 @@ class App extends React.Component{
       },
       body: JSON.stringify(userInfo)
     })
-      .then(res => res.json())
+    .then(res => res.json())
       .then(this.handleResp)
   }
 
@@ -82,8 +104,20 @@ class App extends React.Component{
       },
       body: JSON.stringify(userInfo)
     })
-      .then(res => res.json())
-      .then(this.handleResp)
+    .then(res => res.json())
+    .then(this.handleResp)
+  }
+
+  handleResp = (resp) => {
+    if (resp.user) {
+        localStorage.token = resp.token
+        this.setState(resp, () => {
+            this.props.history.push("/profile")
+        })
+      }
+      else {
+        alert(resp.error)
+    }
   }
 
   renderForm = (routerProps) => {
@@ -95,7 +129,12 @@ class App extends React.Component{
   }
 
   renderProfile = (routerProps) => {
-    return <ProfileContainer user={this.state.user} token={this.state.token} />
+    return <ProfileContainer 
+    user={this.state.user} 
+    token={this.state.token} 
+    handleLogout={this.handleLogout} 
+
+    />
   }
 
   handleLogout = (e) => {
@@ -109,15 +148,26 @@ class App extends React.Component{
   
   render() {
     // console.log(this.state)
+    // console.log(this.state.selectedRestaurant)
+
+    // console.log(this.state.restaurantCollections.selectedRestaurant)
     return (
       <div className="App">
-        <NavBar token={this.state.token} handleLogout={this.handleLogout} />
+        <NavBar />
         <Switch>
           <Route path="/login" render={ this.renderForm } />
           <Route path="/register" render={ this.renderForm } />
           <Route path="/profile" render={ this.renderProfile } />
-          <Route path="/" exact render={() => <Home viewport={this.state.viewport} onViewportChanged={this.onViewportChanged} /> } />
-          <Route render={ () => <p>Page not Found</p> } />
+          <Route path="/" exact render={() => <Home 
+            viewport={this.state.viewport} 
+            onViewportChanged={this.onViewportChanged} 
+            arrayOfRestaurants={this.state.restaurantCollections.array} 
+            selectedRestaurant={this.state.selectedRestaurant} 
+            setSelectedRestaurant={this.setSelectedRestaurant}
+            deselectRestaurant={this.deselectRestaurant}
+            />}  
+          />
+        <Route render={ () => <p>Page not Found</p> } />
         </Switch>
       </div>
   );

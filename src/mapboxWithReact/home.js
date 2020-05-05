@@ -3,31 +3,62 @@ import ReactDOM from 'react-dom';
 import mapboxgl from 'mapbox-gl';
 import ReactMapGL, {Marker, Popup} from "react-map-gl"
 
-console.log(process.env.REACT_APP_API_KEY)
 
 class Home extends React.Component{
 
     onViewportChange = (viewport) => {
-        console.log(viewport)
+        // console.log(viewport)
         this.props.onViewportChanged(viewport)
     }
 
+    handleOpenClick = (restaurant) => {
+        // console.log("click on the handler")
+        // e.preventDefault()
+        this.props.setSelectedRestaurant(restaurant)
+        // console.log(this.props.selectedRestaurant)
+    }
+
+    handleCloseClick = (restaurant) => {
+        this.props.deselectRestaurant(restaurant)
+    }
+
+    renderRestaurantMarkers = (restaurants) => {
+        return this.props.arrayOfRestaurants.map( restaurant => {
+            return <Marker key={restaurant.id} longitude={restaurant.long} latitude={restaurant.lat} >
+                    <button className="marker-btn" onClick={ () => {this.handleOpenClick(restaurant)} } 
+                    onClose={ () => {this.handleCloseClick(restaurant)} } 
+                    >
+                        <img src="https://cdn4.iconfinder.com/data/icons/pokemon-go/512/Pokemon_Go-17-512.png" alt="icon" />
+                    </button>  
+                   </Marker> 
+        })
+    } 
+
     render(){
+        // console.log(this.props.restaurantCollections)
+        // let { selectedRestaurant, array } = this.props.restaurantCollections
+
         return(
             <div>
-                <div style={{position:"fixed", top: "0", left:"0", width:"100%", zIndex:"100", background:"rgba(255, 255, 255, 0.6)"}}>
-                    {/* <CategorySelector handleRadio={this.handleRadio} filterTerm={this.state.filterTerm}/> */}
+                <div>
+                This will be the popup section for showing one clicked restaurant
                 </div>
                 <ReactMapGL 
                 {...this.props.viewport} 
                 mapboxApiAccessToken={process.env.REACT_APP_API_KEY}
-                mapStyle="mapbox://styles/dwang0816/ck1k0qvij2rrl1cobig03w3rf"
+                mapStyle='mapbox://styles/davidcha177/ck9sxqarx0ai11ipkxl351lis'
                 onViewportChange={this.onViewportChange}
                 >
+                    {this.renderRestaurantMarkers()}
 
+                    {this.props.selectedRestaurant && (
+                        <Popup latitude={this.props.selectedRestaurant.lat} longitude={this.props.selectedRestaurant.long} 
+                        onClose={ () => {this.handleCloseClick(this.props.selectedRestaurant)} }
+                        >
+                            {this.props.selectedRestaurant.name}
+                        </Popup>
+                    )}
                 </ReactMapGL>
-                <div style={{position:"fixed", bottom: "0", left:"0", width:"100%", height: "30px", zIndex:"100", background:"rgba(255, 255, 255, 0.6)"}}>
-                </div>
             </div>
         )
     }
