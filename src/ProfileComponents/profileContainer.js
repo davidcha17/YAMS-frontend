@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom'
+import List from './list'
 
 // create a list for restaurants
 // create a form for adding restaurant to list
@@ -22,18 +23,19 @@ class ProfileContainer extends Component {
 }
 
   render() {
+    console.log(this.props.lists, "this is the list")
     let {user:{list, username}} = this.props
+
+    let arrayOfRestaurants = this.props.lists.map( list => {
+      return <List key={list.id} list={list} name={list.name} />
+    })
 
     return (
       <div>
         <h2>{username}&apos;s Profile</h2>
-        <h3>TGList</h3>
-
-        {/* <ol>
-          {list.map(restaurantObj => <List key={restaurantObj.id} s={snackObj} />)}
-        </ol>
-        <NewSnackForm token={this.props.token} addOneSnack={this.props.addOneSnack}/> */}
         <button onClick={this.handleClick}>Log out</button>
+        <h3>TGList</h3>
+          {arrayOfRestaurants}
       </div>
     );
   }

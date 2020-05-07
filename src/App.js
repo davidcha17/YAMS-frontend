@@ -25,26 +25,40 @@ class App extends React.Component{
       username: "",
       id: 0
     },
+    lists: [],
     token: "",
-    restaurantCollections: {
-      array: []
-    },
+    restaurantCollections: [],
     selectedRestaurant: null
   }
 
+
+
+  addOneRestaurantToList = (restObj, selectedRestaurant) => {
+    // console.log(restObj)
+    let copyOfUser = {
+      ...this.state.user,
+      lists: [...this.state.user.lists, restObj]
+    }
+      this.setState({
+        user: copyOfUser,
+        lists: [...this.state.lists, selectedRestaurant]
+      })
+  }
+
+
   // see how we can transfer the props into the home component and utilize mapbox keywords in order to show the props
 
-  setSelectedRestaurant = (obj) => {
+  setSelectedRestaurant = (restObj) => {
     // console.log("Click on the controlled")
     this.setState({
-      selectedRestaurant: obj
+      selectedRestaurant: restObj
     })
     // console.log(!this.state.restaurantCollections.selectedRestaurant)
   }
 
-  deselectRestaurant = (obj) => {
+  deselectRestaurant = (restObj) => {
     this.setState({
-      selectedRestaurant: !obj
+      selectedRestaurant: !restObj
     })
   }
 
@@ -74,12 +88,25 @@ class App extends React.Component{
     .then( res => res.json())
     .then( restaurantData => {
       this.setState({
-        restaurantCollections: {
-          array: restaurantData,
-          selectedRestaurant: false
-        }
+        restaurantCollections: restaurantData
       })
     })
+
+    if (localStorage.getItem("token")) {
+
+    fetch("http://localhost:4000/lists", {
+        headers: {
+          "Authorization": `Bearer ${localStorage.token}`
+        }
+      })
+      .then(res => res.json())
+      .then( listData => {
+        this.setState({
+          lists: listData
+        })
+      })
+    }
+
   }
 
 
@@ -133,7 +160,7 @@ class App extends React.Component{
     user={this.state.user} 
     token={this.state.token} 
     handleLogout={this.handleLogout} 
-
+    lists={this.state.lists}
     />
   }
 
@@ -149,8 +176,10 @@ class App extends React.Component{
   render() {
     // console.log(this.state)
     // console.log(this.state.selectedRestaurant)
+    console.log(this.state.user.lists, "user's lists")
+    console.log(this.state.lists, "list")
+    // console.log(this.state.user.lists.last, "last")
 
-    // console.log(this.state.restaurantCollections.selectedRestaurant)
     return (
       <div className="App">
         <NavBar />
@@ -161,10 +190,13 @@ class App extends React.Component{
           <Route path="/" exact render={() => <Home 
             viewport={this.state.viewport} 
             onViewportChanged={this.onViewportChanged} 
-            arrayOfRestaurants={this.state.restaurantCollections.array} 
+            arrayOfRestaurants={this.state.restaurantCollections} 
             selectedRestaurant={this.state.selectedRestaurant} 
             setSelectedRestaurant={this.setSelectedRestaurant}
             deselectRestaurant={this.deselectRestaurant}
+            token={this.state.token}
+            addOneRestaurantToList={this.addOneRestaurantToList}
+            user_id={this.state.user.id}
             />}  
           />
         <Route render={ () => <p>Page not Found</p> } />

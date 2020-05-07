@@ -34,9 +34,29 @@ class Home extends React.Component{
         })
     } 
 
+    addOneToList = (e) => {
+        console.log(this.props.selectedRestaurant)
+        console.log("adding...")
+
+        fetch(`http://localhost:4000/lists`, {
+            method: "POST",
+            headers: {
+                'content-type': 'application/json',
+                'Authorization': `Bearer ${this.props.token}`
+            },
+            body: JSON.stringify(this.props.selectedRestaurant)
+        })
+        .then( res => res.json())
+        .then((restObj) => {
+            this.props.addOneRestaurantToList(restObj, this.props.selectedRestaurant)
+        })
+    }
+    
+
     render(){
-        // console.log(this.props.restaurantCollections)
-        // let { selectedRestaurant, array } = this.props.restaurantCollections
+    
+        // let { name, image_url, url, phone, address, price, kind_of_food, transactions, distance } = this.props.setSelectedRestaurant
+        // attributes :id, :name, :image_url, :url, :phone, :lat, :long, :address, :price, :kind_of_food, :distance, :transactions
 
         return(
             <div>
@@ -52,10 +72,21 @@ class Home extends React.Component{
                     {this.renderRestaurantMarkers()}
 
                     {this.props.selectedRestaurant && (
-                        <Popup latitude={this.props.selectedRestaurant.lat} longitude={this.props.selectedRestaurant.long} 
+                        <Popup className="popup"
+                        latitude={this.props.selectedRestaurant.lat} 
+                        longitude={this.props.selectedRestaurant.long} 
                         onClose={ () => {this.handleCloseClick(this.props.selectedRestaurant)} }
                         >
-                            {this.props.selectedRestaurant.name}
+                            <h3>{this.props.selectedRestaurant.name}</h3><br/>
+                            <img src={this.props.selectedRestaurant.image_url} alt={this.props.selectedRestaurant.name} /><br/>
+                            Url: {this.props.selectedRestaurant.url}
+                            Address: {this.props.selectedRestaurant.address}<br />
+                            Transaction(s): {this.props.selectedRestaurant.transactions}<br />
+                            Price: {this.props.selectedRestaurant.price}<br />
+                            Phone: {this.props.selectedRestaurant.phone}<br/>
+                            Distance: {this.props.selectedRestaurant.distance}<br/>
+                            Type_of_food: {this.props.selectedRestaurant.kind_of_food}<br />
+                            <button onClick={() => {this.addOneToList(this.props.selectedRestaurant)} } >add TGList</button>
                         </Popup>
                     )}
                 </ReactMapGL>
