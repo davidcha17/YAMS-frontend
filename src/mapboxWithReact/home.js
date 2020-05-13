@@ -60,9 +60,9 @@ class Home extends React.Component{
 
         return(
             <div>
-                <div>
-                This will be the popup section for showing one clicked restaurant
-                </div>
+                <title>
+                Welcome to YAMS
+                </title>
                 <ReactMapGL 
                 {...this.props.viewport} 
                 mapboxApiAccessToken={process.env.REACT_APP_API_KEY}
@@ -79,12 +79,12 @@ class Home extends React.Component{
                         >
                             <h3>{this.props.selectedRestaurant.name}</h3><br/>
                             <img src={this.props.selectedRestaurant.image_url} alt={this.props.selectedRestaurant.name} /><br/>
-                            Url: {this.props.selectedRestaurant.url}
+                            {/* Url: {this.props.selectedRestaurant.url} */}
                             Address: {this.props.selectedRestaurant.address}<br />
                             Transaction(s): {this.props.selectedRestaurant.transactions}<br />
                             Price: {this.props.selectedRestaurant.price}<br />
                             Phone: {this.props.selectedRestaurant.phone}<br/>
-                            Distance: {this.props.selectedRestaurant.distance}<br/>
+                            {/* Distance: {this.props.selectedRestaurant.distance}<br/> */}
                             Type_of_food: {this.props.selectedRestaurant.kind_of_food}<br />
                             <button onClick={() => {this.addOneToList(this.props.selectedRestaurant)} } >add TGList</button>
                         </Popup>

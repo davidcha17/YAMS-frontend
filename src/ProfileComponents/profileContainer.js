@@ -27,11 +27,11 @@ class ProfileContainer extends Component {
     let {user:{list, username}} = this.props
 
     let arrayOfRestaurants = this.props.lists.map( list => {
-      return <List key={list.id} list={list} name={list.name} />
+      return <List key={list.id} list={list} name={list.name} token={this.props.token} deleteRestaurant={this.props.deleteRestaurant}/>
     })
 
     return (
-      <div>
+      <div className="profile-container" >
         <h2>{username}&apos;s Profile</h2>
         <button onClick={this.handleClick}>Log out</button>
         <h3>TGList</h3>

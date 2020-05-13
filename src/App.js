@@ -33,6 +33,28 @@ class App extends React.Component{
 
 
 
+  deleteRestaurant = (id) => {
+    fetch(`http://localhost:4000/lists/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Authorization": `Bearer ${this.state.token}`
+      }    
+    })
+    .then(res => res.json())
+    .then(() => {
+      let newArray = this.state.user.lists.filter( listObj => {
+        return listObj.id !== id
+      })
+      this.setState({
+        user: {
+          lists: newArray
+        },
+        lists: newArray
+      })
+    })
+  }
+
+
   addOneRestaurantToList = (restObj, selectedRestaurant) => {
     // console.log(restObj)
     let copyOfUser = {
@@ -161,6 +183,7 @@ class App extends React.Component{
     token={this.state.token} 
     handleLogout={this.handleLogout} 
     lists={this.state.lists}
+    deleteRestaurant={this.deleteRestaurant}
     />
   }
 
@@ -176,8 +199,8 @@ class App extends React.Component{
   render() {
     // console.log(this.state)
     // console.log(this.state.selectedRestaurant)
-    console.log(this.state.user.lists, "user's lists")
-    console.log(this.state.lists, "list")
+    // console.log(this.state.user.lists, "user's lists")
+    // console.log(this.state.lists, "list")
     // console.log(this.state.user.lists.last, "last")
 
     return (
