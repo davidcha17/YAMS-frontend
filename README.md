@@ -1,3 +1,15 @@
+Welcome to the frontend of Y.A.M.S
+
+The backend to for this repository is at https://github.com/davidcha17/YAMS-backend
+
+This is a S.P.A that shows the users where the avaible take-out restaurants are. This repository utilizes MapBox API to display the location of these open restaurants and showcases the details of such restaurants. If the user is interested in one of the restaurants in the location he/she can add it on to their list which is called T.G List. In order to have a list of restaurants the user must create an account which is done with AUTH. 
+
+Please npm install to avoid any errors
+
+
+
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
