@@ -15,7 +15,10 @@ const List = (props) => {
 
   // console.log(props.list)
 
-  let { name, image_url, url, distance, transactions, address, price, kind_of_food, phone } = props.list
+  let { name, image_url, url, distance, transactions, address, price, kind_of_food, phone } = props.list.restaurant
+
+  console.log(props.list, "list instance")
+  // console.log(props.list.restaurant, "individual restaurants")
 
   return(
     <div className="restaurant" >

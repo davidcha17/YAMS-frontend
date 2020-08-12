@@ -24,10 +24,13 @@ class ProfileContainer extends Component {
 
   render() {
     console.log(this.props.lists, "this is the list")
-    let {user:{list, username}} = this.props
+    console.log(this.props.user.lists, "user's list")
+    console.log(this.props.user.username)
+    
+    let {user:{lists, username}} = this.props
 
     let arrayOfRestaurants = this.props.lists.map( list => {
-      return <List key={list.id} list={list} name={list.name} token={this.props.token} deleteRestaurant={this.props.deleteRestaurant}/>
+      return <List key={list.id} list={list} name={list.restaurant} token={this.props.token} deleteRestaurant={this.props.deleteRestaurant}/>
     })
 
     return (

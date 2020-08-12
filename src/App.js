@@ -45,10 +45,12 @@ class App extends React.Component{
       let newArray = this.state.user.lists.filter( listObj => {
         return listObj.id !== id
       })
-      this.setState({
-        user: {
+        let copyOfUser = {
+          ...this.state.user,
           lists: newArray
-        },
+        }
+      this.setState({
+        user: copyOfUser,
         lists: newArray
       })
     })
@@ -63,7 +65,7 @@ class App extends React.Component{
     }
       this.setState({
         user: copyOfUser,
-        lists: [...this.state.lists, selectedRestaurant]
+        lists: [...this.state.user.lists, selectedRestaurant]
       })
   }
 
@@ -182,7 +184,7 @@ class App extends React.Component{
     user={this.state.user} 
     token={this.state.token} 
     handleLogout={this.handleLogout} 
-    lists={this.state.lists}
+    lists={this.state.user.lists}
     deleteRestaurant={this.deleteRestaurant}
     />
   }
