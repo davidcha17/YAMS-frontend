@@ -189,10 +189,26 @@ class App extends React.Component{
     />
   }
 
-  handleLogout = (e) => {
+  handleLogout = () => {
     localStorage.clear()
-    return <Route path="/" exact render={() => <Home viewport={this.state.viewport} onViewportChanged={this.onViewportChanged} /> } />
-    // token is clearing but we need to render it to the home page after user logs out
+    return fetch('http://localhost:4000/logout', {
+      method: "DELETE"
+    }) 
+    .then( res => res.json()) 
+    .then(() => {
+      this.setState({
+        user: {
+          lists: [],
+          username: "",
+          id: 0
+        },
+        token: "",
+        lists: [],
+      })
+      this.props.history.push("/")
+      // console.log(this.state.user)
+      // return <Form formName="Login Form" handleSubmit={this.handleLoginSubmit}/> 
+    })
   }
 
 

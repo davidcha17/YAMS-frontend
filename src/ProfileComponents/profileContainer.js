@@ -15,18 +15,17 @@ class ProfileContainer extends Component {
   }
 
 
-  handleClick = () => {
+  handleClick = (e) => {
     console.log("you are now logging out");
-    let key = this.props.token
+    e.preventDefault()
     this.props.handleLogout()
-    // the token has been cleared out but the profileContainer still has instance data about the logged out user
 }
 
   render() {
-    console.log(this.props.lists, "this is the list")
-    console.log(this.props.user.lists, "user's list")
-    console.log(this.props.user.username)
-    
+    // console.log(this.props.lists, "this is the list")
+    // console.log(this.props.user.lists, "user's list")
+    // console.log(this.props.user.username)
+
     let {user:{lists, username}} = this.props
 
     let arrayOfRestaurants = this.props.lists.map( list => {
