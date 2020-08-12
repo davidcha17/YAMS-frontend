@@ -27,7 +27,7 @@ const List = (props) => {
       <ul>Phone: {phone}</ul>
       <ul>Distance: {distance} meters away from your location</ul>
       <ul>Price: {price}</ul>
-      <button onClick={handleDeleteClick} >Take Off TGList</button>
+      <button className="delete-btn" onClick={handleDeleteClick} >Take Off TGList</button>
     </div>
   )
 };

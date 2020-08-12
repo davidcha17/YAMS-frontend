@@ -89,17 +89,22 @@ ul.nav li button {
 }
 
 .restaurant {
-  display: grid;
-  grid-template-columns: center;
+  /* display: grid; */
+  /* grid-template-columns: center; */
   grid-column-gap: 50px;
   grid-row-gap: 5px;
   margin-left: auto;
   margin-right: auto;
+  display: table; 
+  text-align: center;
 }
 
-.restaurant .button {
+.delete-btn {
   padding: 10px 20px;
+  width: 100px;
+  margin: 50px;
   align-self: end;
+  vertical-align: bottom;
 }
 
 .restaurant {
@@ -110,3 +115,7 @@ ul.nav li button {
 .profile-container {
   background-color: grey
 }
+
+/* .restaurant .button { */
+
+/* } */
